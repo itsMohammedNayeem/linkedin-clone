@@ -1,9 +1,19 @@
-import Image from "next/image";
+import UserInformation from "@/components/UserInformation";
 
 export default function Home() {
   return (
-    <main>
-      <h1>Linked in clone</h1>
-    </main>
+    <div className="flex">
+      <section>
+        {/* UserInformation */}
+        <UserInformation />
+      </section>
+
+      <section>
+        {/* PostForm */}
+        {/* PostFeed */}
+      </section>
+
+      <section>{/* Widget */}</section>
+    </div>
   );
 }
