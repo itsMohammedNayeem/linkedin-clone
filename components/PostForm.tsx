@@ -23,9 +23,35 @@ function PostForm() {
     }
   };
 
+  const handlePostAction = async (formData: FormData) => {
+    const formDataCopy = formData;
+    ref.current?.reset();
+
+    const text = formDataCopy.get("postInput") as string;
+
+    if (!text.trim()) {
+      throw new Error("Post text is required");
+    }
+
+    setPreview(null);
+
+    try {
+      await createPostAction(formDataCopy);
+    } catch (error) {
+      console.error("Error creating post: ", error);
+    }
+  };
+
   return (
-    <div>
-      <form ref={ref}>
+    <div className="mb-2">
+      <form
+        actions={(formData) => {
+          // Handle form submission with server action
+          handlePostAction(formData);
+        }}
+        className="p-3 bg-white rounded-lg border"
+        ref={ref}
+      >
         <div className="flex items-center space-x-2">
           <Avatar>
             <AvatarImage src={imageUrl} />
@@ -52,35 +78,37 @@ function PostForm() {
           />
 
           <button className="hidden">Post</button>
+        </div>
 
-          {/* Preview conditional check*/}
+        {/* Preview conditional check*/}
 
-          {preview && (
-            <div className="mt-3">
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-full object-cover"
-              />
-            </div>
-          )}
-
-          <div className="flex justify-end mt-2 space-x-2">
-            <Button type="button" onClick={() => fileInputRef.current?.click()}>
-              <ImageIcon className="mr-2" color="currentColor" size={16} />
-              {preview ? "Change" : "Add"} image
-            </Button>
-
-            {/* Add a remove preview button */}
-            {preview && (
-              <Button variant="outline">
-                <XIcon className="mr-2" size={16} color="currentColor" /> Remove
-                Image
-              </Button>
-            )}
+        {preview && (
+          <div className="mt-3">
+            <img src={preview} alt="Preview" className="w-full object-cover" />
           </div>
+        )}
+
+        <div className="flex justify-end mt-2 space-x-2">
+          <Button type="button" onClick={() => fileInputRef.current?.click()}>
+            <ImageIcon className="mr-2" color="currentColor" size={16} />
+            {preview ? "Change" : "Add"} image
+          </Button>
+
+          {/* Add a remove preview button */}
+          {preview && (
+            <Button
+              variant="outline"
+              type="submit"
+              onClick={() => setPreview(null)}
+            >
+              <XIcon className="mr-2" size={16} color="currentColor" /> Remove
+              Image
+            </Button>
+          )}
         </div>
       </form>
+
+      <hr className="mt-2 border-gray-300" />
     </div>
   );
 }
